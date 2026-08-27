@@ -167,14 +167,15 @@ test('below the Mathieu threshold the surface stays flat @heavy', async ({ page 
 // jumps from kick to cymbal every frame, Omega jumped with it and the parametric drive
 // never accumulated coherent phase: with a pure tone the water grew, with a song it
 // stayed flat. The spectral centroid moves slowly and fixes the real case.
-test('the centroid is far steadier than the peak bin on music', async ({ page }) => {
+test('the centroid is far steadier than the peak bin on music @heavy', async ({ page }) => {
   await openApp(page);
   await page.click('button.demo[data-track$="organic-dissonance.mp3"]');
   await page.waitForFunction(() => window.vibracion.audio.playing, null, { timeout: 30_000 });
 
-  // This measures audio, but the Faraday solver saturates the main thread under
-  // software rendering and starves the sampling timer. Switching to the Chladni-only
-  // view takes it out of the loop and changes nothing about what is being measured.
+  // Tagged @heavy even though it measures audio: it needs real-time playback and a
+  // sampling timer that actually fires, and under software rendering neither holds.
+  // The Chladni-only view keeps the Faraday solver off the main thread, which helps
+  // locally and changes nothing about what is being measured.
   await page.click('#view-seg button[data-view="chladni"]');
 
   // Restart playback so the measurement window is always the same stretch of the track.
