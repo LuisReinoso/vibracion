@@ -172,6 +172,11 @@ test('the centroid is far steadier than the peak bin on music', async ({ page })
   await page.click('button.demo[data-track$="organic-dissonance.mp3"]');
   await page.waitForFunction(() => window.vibracion.audio.playing, null, { timeout: 30_000 });
 
+  // This measures audio, but the Faraday solver saturates the main thread under
+  // software rendering and starves the sampling timer. Switching to the Chladni-only
+  // view takes it out of the loop and changes nothing about what is being measured.
+  await page.click('#view-seg button[data-view="chladni"]');
+
   // Restart playback so the measurement window is always the same stretch of the track.
   // Otherwise it lands wherever the track happens to be and the result swings with it.
   await page.evaluate(() => window.vibracion.audio.play());
