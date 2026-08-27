@@ -26,7 +26,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npm test
+      # CI has no GPU: Chromium falls back to SwiftShader and the tests that wait for
+      # an instability to grow out of noise take tens of minutes instead of seconds.
+      # Those carry the @heavy tag and run locally with `npm test`; CI keeps the rest,
+      # which still covers the FFT, the Bessel tables, the unit conversion and the UI.
+      - run: npx playwright test --project=chromium --grep-invert '@slow|@gpu|@heavy'
         env:
           CI: 'true'
       - if: failure()

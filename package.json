@@ -10,7 +10,8 @@
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",
     "test:validation": "playwright test --project=gpu --grep @gpu",
-    "test:slow": "playwright test --project=chromium --grep @slow"
+    "test:slow": "playwright test --project=chromium --grep @slow",
+    "test:ci": "playwright test --project=chromium --grep-invert '@slow|@gpu|@heavy'"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2"

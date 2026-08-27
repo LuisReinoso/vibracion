@@ -26,7 +26,7 @@ async function mount(page, n = N, params = {}) {
   }, { n, params });
 }
 
-test('the numerical dispersion reproduces the theoretical relation', async ({ page }) => {
+test('the numerical dispersion reproduces the theoretical relation @heavy', async ({ page }) => {
   await openApp(page);
   await mount(page, N, { nu: 0, F: 0, dt: 0.01, noiseFloor: 0, sigma: 8, h: 6 });
 
@@ -71,7 +71,7 @@ test('the numerical dispersion reproduces the theoretical relation', async ({ pa
   }
 });
 
-test('with no drive and no viscosity the energy does not run away', async ({ page }) => {
+test('with no drive and no viscosity the energy does not run away @heavy', async ({ page }) => {
   await openApp(page);
   await mount(page, N, { nu: 0, F: 0, dt: 0.01, noiseFloor: 0, sigma: 8, h: 6 });
 
@@ -192,7 +192,7 @@ test('selects squares in the capillary regime and does not in gravity @slow', as
   expect(res.gravity.n2, 'the solver does not discriminate regime').toBeLessThan(0.5);
 });
 
-test('the Faraday threshold lands where Mathieu theory puts it', async ({ page }) => {
+test('the Faraday threshold lands where Mathieu theory puts it @heavy', async ({ page }) => {
   await openApp(page);
   // High nu on purpose: the growth rate goes as lambda = 2 nu k^2, and with small nu the
   // experiment would need hundreds of thousands of steps to be conclusive. gamma is still

@@ -209,7 +209,8 @@ If the water stays flat, check the `F_c` line in panel B: you are below threshol
 ```
 npm install
 npx playwright install chromium
-npm test                # normal suite, no GPU needed
+npm test                # full local suite, about 8 minutes
+npm run test:ci         # skips the slow-growth tests, what CI runs
 npm run test:slow       # adds pattern selection, about 6 minutes
 npm run test:validation # the experiment validation, needs a GPU
 ```
@@ -218,7 +219,9 @@ Thirty-eight end-to-end tests with Playwright, around eight minutes. The physics
 
 Bessel zeros against Abramowitz and Stegun table 9.5. Pattern wavelength measured with a radial DFT over the height field and compared against the Mathieu prediction. Subharmonic response measured by counting zero crossings of the water against zero crossings of the drive, which has to come out at one half. Below threshold, the surface is required to stay flat. And after minutes of simulation, no NaN and cubic saturation braking before the hard clamp.
 
-The last command opens a real window on purpose. The headless runner starts Chromium with SwiftShader, i.e. software rendering, and this validation runs twelve Fourier transforms per step on a 256 grid for tens of thousands of steps: under software it does not finish in half an hour, against under two minutes on a GPU. That is why it stays out of CI.
+Tests tagged `@heavy` wait for an instability to grow out of noise. On a GPU that takes seconds; under SwiftShader, which is what a CI runner gives you, it takes tens of minutes. So CI runs everything except those, which still covers the FFT, the Bessel tables, the unit conversion, the audio pipeline and the whole interface. The physics tests are the ones you run locally before pushing.
+
+The validation command opens a real window on purpose. The headless runner starts Chromium with SwiftShader, i.e. software rendering, and this validation runs twelve Fourier transforms per step on a 256 grid for tens of thousands of steps: under software it does not finish in half an hour, against under two minutes on a GPU. That is why it stays out of CI.
 
 Seven of the tests are regressions for bugs that actually happened: the whole page vanished on entering expert mode; the water ignored real music while responding to pure tones; the pattern dissolved in every quiet passage and took longer to regrow than the passage lasted; the water kept moving after playback stopped; the `hidden` attribute hid nothing because a local `display` rule beat the browser's; and the tests poisoned each other by piling up WebGL contexts.
 

@@ -78,7 +78,7 @@ test('lowering f0 shifts excitation to higher-order modes', async ({ page }) => 
   expect(agudo.hz / 50).toBeGreaterThan(grave.hz / 250);
 });
 
-test('water responds at half the drive frequency', async ({ page }) => {
+test('water responds at half the drive frequency @heavy', async ({ page }) => {
   await openApp(page);
   await playTone(page, 440);
   const rmsFinal = await waitForPattern(page);
@@ -114,7 +114,7 @@ test('water responds at half the drive frequency', async ({ page }) => {
   expect(razon).toBeLessThan(0.58);
 });
 
-test('the wavelength follows the Mathieu prediction', async ({ page }) => {
+test('the wavelength follows the Mathieu prediction @heavy', async ({ page }) => {
   await openApp(page);
   await playTone(page, 440);
   expect(await waitForPattern(page)).toBeGreaterThan(0.15);
@@ -145,7 +145,7 @@ test('raising the pitch shortens the selected wavelength', async ({ page }) => {
   expect(agudo).toBeLessThan(grave);
 });
 
-test('below the Mathieu threshold the surface stays flat', async ({ page }) => {
+test('below the Mathieu threshold the surface stays flat @heavy', async ({ page }) => {
   await openApp(page);
   await playTone(page, 440);
 
@@ -198,7 +198,7 @@ test('the centroid is far steadier than the peak bin on music', async ({ page })
 // lasted. The dish was flat for most of the piece. It is not enough that the pattern
 // appears once: it has to hold.
 for (const track of ['sun-is-setting-fast', 'organic-dissonance']) {
-  test(`the pattern holds through the whole ${track} track`, async ({ page }) => {
+  test(`the pattern holds through the whole ${track} track @heavy`, async ({ page }) => {
     await openApp(page);
     await page.click(`button.demo[data-track$="${track}.mp3"]`);
     await page.waitForFunction(() => window.vibracion.audio.playing, null, { timeout: 30_000 });
@@ -221,7 +221,7 @@ for (const track of ['sun-is-setting-fast', 'organic-dissonance']) {
   });
 }
 
-test('a real music track clears the threshold and forms a pattern', async ({ page }) => {
+test('a real music track clears the threshold and forms a pattern @heavy', async ({ page }) => {
   await openApp(page);
   await page.click('button.demo[data-track$="organic-dissonance.mp3"]');
   await page.waitForFunction(() => window.vibracion.audio.playing, null, { timeout: 30_000 });
@@ -247,7 +247,7 @@ test('a real music track clears the threshold and forms a pattern', async ({ pag
   expect(await waitForPattern(page), 'with music the water never moved').toBeGreaterThan(0.15);
 });
 
-test('the normalised level falls to zero when the music stops', async ({ page }) => {
+test('the normalised level falls to zero when the music stops @heavy', async ({ page }) => {
   await openApp(page);
   await page.click('button.demo[data-track$="sun-is-setting-fast.mp3"]');
   await page.waitForFunction(() => window.vibracion.audio.playing, null, { timeout: 30_000 });
@@ -314,7 +314,7 @@ test('changing the bowl size scales every partial at once', async ({ page }) => 
   expect(await page.evaluate(() => window.vibracion.audio.centroidHz)).toBeGreaterThan(0);
 });
 
-test('the bowl sustains the Faraday pattern without detuning', async ({ page }) => {
+test('the bowl sustains the Faraday pattern without detuning @heavy', async ({ page }) => {
   await openApp(page);
   await page.click('#btn-bowl');
   expect(await waitForPattern(page), 'the bowl never moved the water').toBeGreaterThan(0.15);
@@ -339,7 +339,7 @@ test('the bowl sustains the Faraday pattern without detuning', async ({ page }) 
   expect(sd / media, `Omega drifted: ${JSON.stringify(omegas.map(o => +o.toFixed(3)))}`).toBeLessThan(0.05);
 });
 
-test('the field stays finite and bounded after minutes of simulation', async ({ page }) => {
+test('the field stays finite and bounded after minutes of simulation @heavy', async ({ page }) => {
   await openApp(page);
   await playTone(page, 300);
   await waitForPattern(page);
