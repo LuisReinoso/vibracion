@@ -6,7 +6,7 @@
   <img src="cover.gif" alt="Chladni figure and Faraday waves reacting to a Tibetan singing bowl" width="640"/>
 
   <p>
-    <a href="https://luisreinoso.github.io/vibracion/">
+    <a href="https://luisreinoso.dev/vibracion/">
       <img src="https://img.shields.io/badge/Live-Demo-4fd1c5?style=flat-square" alt="Live demo" />
     </a>
     <img src="https://img.shields.io/badge/WebGL2-no%20build%20step-2c3a4a?style=flat-square" alt="WebGL2" />
