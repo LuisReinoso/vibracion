@@ -1,0 +1,18 @@
+{
+  "name": "vibracion",
+  "version": "1.0.0",
+  "description": "Real-time cymatics: Chladni figures and Faraday waves driven by audio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8777 --bind 0.0.0.0",
+    "test": "playwright test --project=chromium --grep-invert '@slow|@gpu'",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "test:validation": "playwright test --project=gpu --grep @gpu",
+    "test:slow": "playwright test --project=chromium --grep @slow"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

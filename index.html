@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vibración — real-time cymatics</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Vibración</h1>
+    <p class="sub">Play music and watch the pattern the water forms. Chladni eigenmodes plus a Faraday fluid solver.</p>
+  </div>
+  <button id="btn-mode" aria-pressed="false">Expert mode</button>
+</header>
+
+<main>
+
+  <div id="left">
+
+  <section id="stage">
+    <div class="panel" id="panel-chladni">
+      <div class="panel-head">
+        <span class="tag">A</span>
+        <h2>Chladni — eigenmodes</h2>
+        <span class="hint" id="hint-chladni">powder gathers on the nodes</span>
+        <button class="expand" data-panel="panel-chladni" title="Fullscreen">⤢</button>
+      </div>
+      <canvas id="cv-chladni" width="700" height="700"></canvas>
+      <div class="readout" id="ro-chladni">—</div>
+    </div>
+
+    <div class="panel" id="panel-faraday">
+      <div class="panel-head">
+        <span class="tag">B</span>
+        <h2>Faraday — water real</h2>
+        <span class="hint" id="hint-faraday">parametric instability, responds at Ω/2</span>
+        <button class="expand" data-panel="panel-faraday" title="Fullscreen">⤢</button>
+      </div>
+      <canvas id="cv-faraday" width="700" height="700"></canvas>
+      <canvas id="cv-faithful" width="700" height="700" hidden></canvas>
+      <div class="readout" id="ro-faraday">—</div>
+    </div>
+  </section>
+
+  <section id="spectrum-wrap">
+    <canvas id="cv-spectrum" width="1400" height="90"></canvas>
+  </section>
+
+  </div>
+
+  <aside id="controls">
+
+    <div class="group">
+      <h3>Music</h3>
+      <div class="row btns">
+        <button class="demo" data-track="audio/sun-is-setting-fast.mp3" data-label="The Sun is Setting Fast">Track 1 · slow</button>
+        <button class="demo" data-track="audio/organic-dissonance.mp3" data-label="Organic Dissonance">Track 2 · busy</button>
+      </div>
+      <div class="row btns">
+        <button id="btn-bowl">Singing bowl</button>
+        <button id="btn-strike" hidden>Strike</button>
+      </div>
+      <label class="slider" id="bowl-row" hidden>
+        <span>Bowl size</span>
+        <input type="range" id="s-bowl" min="90" max="440" step="1" value="196">
+        <output id="o-bowl">196 Hz</output>
+      </label>
+      <div class="row btns">
+        <button id="btn-file" class="primary">My music</button>
+        <input type="file" id="file-input" accept="audio/*" hidden>
+        <button id="btn-mic">Microphone</button>
+      </div>
+      <div class="row btns">
+        <button id="btn-play" disabled>Play</button>
+        <button id="btn-stop" disabled>Stop</button>
+      </div>
+      <div class="status" id="audio-status">No source. Pick a track above.</div>
+      <div class="status" id="bowl-info" hidden></div>
+    </div>
+
+    <div class="group">
+      <h3>View</h3>
+      <div class="row btns seg" id="view-seg">
+        <button data-view="split" class="on">Both</button>
+        <button data-view="chladni">Chladni only</button>
+        <button data-view="faraday">Faraday only</button>
+      </div>
+      <div class="row btns seg" id="form-seg">
+        <button data-form="circle" class="on">Round</button>
+        <button data-form="square">Square</button>
+      </div>
+      <div class="row btns seg" id="engine-seg">
+        <button data-engine="rapido" class="on">Fast water</button>
+        <button data-engine="faithful">Water faithful</button>
+      </div>
+      <div class="row btns seg" id="matter-seg">
+        <button data-powder="node" class="on">Powder</button>
+        <button data-powder="anti">Water</button>
+      </div>
+      <label class="slider">
+        <span>Pattern detail</span>
+        <input type="range" id="s-detail" min="0" max="1" step="0.01" value="0.6">
+        <output id="o-detail">medio</output>
+      </label>
+      <div class="status">Coarse on the left, fine on the right. Drives the parameters of both simulations at once.</div>
+    </div>
+
+    <div class="group expert">
+      <h3>Signal generator</h3>
+      <div class="row btns">
+        <button id="btn-tone">Pure tone</button>
+        <button id="btn-sweep">Sweep 50→2000 Hz</button>
+      </div>
+      <label class="slider" id="tone-row" hidden>
+        <span>Tone frequency</span>
+        <input type="range" id="s-tone" min="20" max="2000" step="1" value="440">
+        <output id="o-tone">440 Hz</output>
+      </label>
+      <label class="slider">
+        <span>Output volume</span>
+        <input type="range" id="s-vol" min="0" max="1" step="0.01" value="0.7">
+        <output id="o-vol">0.70</output>
+      </label>
+    </div>
+
+    <div class="group expert">
+      <h3>A · Chladni plate</h3>
+      <div class="row btns seg" id="shape-seg">
+        <button data-shape="circle" class="on">Circular dish</button>
+        <button data-shape="square">Square plate</button>
+      </div>
+      <div class="row btns seg" id="powder-seg">
+        <button data-powder="node" class="on">Powder (nodos)</button>
+        <button data-powder="anti">Water (antinodos)</button>
+      </div>
+      <label class="slider">
+        <span>Fundamental f₀</span>
+        <input type="range" id="s-f0" min="20" max="600" step="1" value="90">
+        <output id="o-f0">90 Hz</output>
+      </label>
+      <label class="slider">
+        <span>Q (resonance sharpness)</span>
+        <input type="range" id="s-q" min="5" max="200" step="1" value="45">
+        <output id="o-q">45</output>
+      </label>
+      <label class="slider">
+        <span>Nodal line width</span>
+        <input type="range" id="s-sigma" min="0.005" max="0.15" step="0.001" value="0.045">
+        <output id="o-sigma">0.045</output>
+      </label>
+      <label class="slider">
+        <span>Persistence (time smoothing)</span>
+        <input type="range" id="s-persist" min="0" max="0.98" step="0.01" value="0.82">
+        <output id="o-persist">0.82</output>
+      </label>
+    </div>
+
+    <div class="group expert">
+      <h3>B · Faraday waves</h3>
+      <div class="row btns seg" id="dish-seg">
+        <button data-dish="circle" class="on">Circular container</button>
+        <button data-dish="square">Square container</button>
+      </div>
+      <label class="slider">
+        <span>Ω minimum (low audio)</span>
+        <input type="range" id="s-omin" min="0.15" max="1.2" step="0.01" value="0.30">
+        <output id="o-omin">0.30</output>
+      </label>
+      <label class="slider">
+        <span>Ω maximum (high audio)</span>
+        <input type="range" id="s-omax" min="0.6" max="3" step="0.01" value="1.80">
+        <output id="o-omax">1.80</output>
+      </label>
+      <label class="slider">
+        <span>Surface tension σ</span>
+        <input type="range" id="s-sigmaS" min="0" max="0.2" step="0.002" value="0.05">
+        <output id="o-sigmaS">0.050</output>
+      </label>
+      <label class="slider">
+        <span>Viscosity ν (kills short waves)</span>
+        <input type="range" id="s-nu" min="0.005" max="0.12" step="0.001" value="0.030">
+        <output id="o-nu">0.030</output>
+      </label>
+      <label class="slider">
+        <span>Drive gain F</span>
+        <input type="range" id="s-force" min="0" max="1.2" step="0.005" value="0.30">
+        <output id="o-force">0.300</output>
+      </label>
+      <div class="row btns">
+        <button id="btn-lock">Lock Ω to current peak</button>
+        <button id="btn-reset-f">Reiniciar water</button>
+      </div>
+      <div class="status" id="lock-status">Ω follows the live audio.</div>
+    </div>
+
+    <div class="group">
+      <h3>Export</h3>
+      <div class="row btns">
+        <button id="btn-png-a">Chladni PNG</button>
+        <button id="btn-png-b">Faraday PNG</button>
+      </div>
+    </div>
+
+    <div class="group note expert">
+      <h3>What you are looking at</h3>
+      <p><b>A</b> solves the real eigenmodes of a membrane or plate and excites them with the spectral energy of your audio through a damped resonant response. The figure you see is the one that frequency actually produces.</p>
+      <p><b>B</b> integrates the linearised free-surface equations with an oscillating effective gravity. Water responds at <b>half</b> the drive frequency, which is the Faraday signature.</p>
+      <p>Panel B is dimensionless: real water at 440 Hz would make sub-millimetre capillary ripples. The Ω sliders map the audio onto a visible range.</p>
+    </div>
+
+  </aside>
+
+</main>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
